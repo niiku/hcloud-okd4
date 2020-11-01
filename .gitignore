@@ -1,0 +1,7 @@
+#terraform.tfvars
+*.tfstate
+*.tfstate.backup
+.terraform/
+id_rsa
+.idea/
+.cluster.tfstate.lock.info

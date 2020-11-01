@@ -1,0 +1,58 @@
+# Hetzner Cloud API Token
+# https://console.hetzner.cloud/
+# Select Project > Access > API Tokens > Generate API Token
+hcloud_token = "<paste-token>"
+
+# CloudFlare API Token
+# https://support.cloudflare.com/hc/en-us/articles/200167836-Where-do-I-find-my-Cloudflare-API-key-
+email = "<cloudflare-email>"
+api_key = "<paste-token>"
+cf_zone_id = "<paste-id>""
+
+# Public Key to access OKD4 nodes
+public_key_path = "~/.ssh/id_rsa.pub"
+private_key_path = "~/.ssh/id_rsa"
+
+# OKD4 Domain
+base_domain = "<your-domain>"
+cluster_name = "okd"
+
+
+# Region
+# Possible values:
+# nbg1 - Nuremberg, Germany
+# fsn1 - Falkenstein, Germany
+# hel1 - Helsinki, Finland
+# Check availability here: https://console.hetzner.cloud > Select Project > Servers > Add Server
+# Verify that the requested server types are available by selecting them. Sometimes servers with NVME SSDs aren't available.
+region = "fsn1"
+
+
+# Ignition settings - can be disabled after installation/might be needed to add new workers
+ignition_enabled = true
+
+# OpenShift installer directory - needs to end with a "/"
+openshift_installer_dir = "~/okd4/installer/"
+
+# Fedora CoreOS installer files
+# https://getfedora.org/coreos/download/
+fcos_installer_initramfs  = "https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20201004.3.0/x86_64/fedora-coreos-32.20201004.3.0-live-initramfs.x86_64.img"
+fcos_installer_kernel     = "https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20201004.3.0/x86_64/fedora-coreos-32.20201004.3.0-live-kernel-x86_64"
+fcos_metal_bios           = "https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20201004.3.0/x86_64/fedora-coreos-32.20201004.3.0-metal.x86_64.raw.xz"
+fcos_rootfs               = "https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20201004.3.0/x86_64/fedora-coreos-32.20201004.3.0-live-rootfs.x86_64.img"
+
+# Bootstrap settings - can be disabled after installation
+bootstrap_enabled = true
+bootstrap_server_type = "cx41"
+
+# Master settings
+master_server_type = "cx41"
+
+# Worker settings
+worker_server_type = "cx41"
+worker_count = 3
+worker_storage_enabled = false # Enable worker storage to attach a hcloud disk
+worker_storage_size = 100 # In GiB
+
+# Additional subdomains (e.g. subdomain.<base-domain>) as a wildcard entry for <base_domain> result in a unusable cluster
+subdomains = []

@@ -1,0 +1,30 @@
+apiVersion: v1
+baseDomain: <your-domain>
+metadata:
+  name: <cluster-name> # This must match the the cluster_name in terraform.tfvars
+
+compute:
+- hyperthreading: Enabled
+  name: worker
+  replicas: 3 # Should match with worker_count in terraform.tfvars
+
+controlPlane:
+  hyperthreading: Enabled
+  name: master
+  replicas: 3
+
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14 
+    hostPrefix: 23 
+  networkType: OpenShiftSDN
+  serviceNetwork: 
+  - 172.30.0.0/16
+
+platform:
+  none: {}
+
+fips: false
+# Optional: Go to https://try.openshift.com/ and get a pull secret from RedHat. If you do not have an account I recommend creating a no-cost developer account.
+pullSecret: ''
+sshKey: 'ssh-rsa <your-ssh-public-key>'
