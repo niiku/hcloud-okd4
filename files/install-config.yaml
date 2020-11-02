@@ -25,6 +25,5 @@ platform:
   none: {}
 
 fips: false
-# Optional: Go to https://try.openshift.com/ and get a pull secret from RedHat. If you do not have an account I recommend creating a no-cost developer account.
-pullSecret: ''
+pullSecret: '{"auths":{"fake":{"auth": "Zm9vOmJhcgo="}}}
 sshKey: 'ssh-rsa <your-ssh-public-key>'
