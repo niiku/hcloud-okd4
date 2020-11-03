@@ -11,6 +11,13 @@ resource "hcloud_server" "worker" {
     hcloud_ssh_key.okd4.id]
 }
 
+resource "hcloud_rdns" "worker" {
+  count = var.worker_count
+  server_id = hcloud_server.worker[count.index].id
+  ip_address = hcloud_server.worker[count.index].ipv4_address
+  dns_ptr = "worker${count.index}.${var.cluster_name}.${var.base_domain}"
+}
+
 resource "hcloud_volume" "storage" {
   count = var.worker_storage_enabled ? var.worker_count : 0
   name = "storage${count.index}.${var.cluster_name}.${var.base_domain}"

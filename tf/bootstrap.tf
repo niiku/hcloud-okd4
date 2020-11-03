@@ -10,6 +10,13 @@ resource "hcloud_server" "bootstrap" {
     hcloud_ssh_key.okd4.id]
 }
 
+resource "hcloud_rdns" "bootstrap" {
+  count = var.bootstrap_enabled ? 1 : 0
+  server_id = hcloud_server.bootstrap[0].id
+  ip_address = hcloud_server.bootstrap[0].ipv4_address
+  dns_ptr = "bootstrap.${var.cluster_name}.${var.base_domain}"
+}
+
 resource "null_resource" "bootstrap_post_deploy" {
   count = var.bootstrap_enabled ? 1 : 0
   connection {

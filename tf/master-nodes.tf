@@ -10,6 +10,13 @@ resource "hcloud_server" "master" {
     hcloud_ssh_key.okd4.id]
 }
 
+resource "hcloud_rdns" "master" {
+  count = var.master_count
+  server_id = hcloud_server.master[count.index].id
+  ip_address = hcloud_server.master[count.index].ipv4_address
+  dns_ptr = "master${count.index}.${var.cluster_name}.${var.base_domain}"
+}
+
 resource "null_resource" "master_post_deploy" {
   count = var.master_count
   connection {
