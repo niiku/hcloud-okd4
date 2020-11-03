@@ -86,10 +86,12 @@ Apply
 ```bash
 terraform apply
 ```
-Wait for bootstrap server to complete. This might take a while as the DNS propagation to the Hetzner DNS servers might take some time. You might see looping the error message on the VMs console:
+You might see looping the error message on the VMs console on the master/worker nodes:
 ```
-GET error: Get "https://api-int.okd.example.tld:22623/config/master": dial tcp: lookup api-int.okd.example.tld on [::1]:53: read udp [::1]:48352->[::1]:53: read: connection refused
+GET error: Get "https://api-int.okd.example.tld:22623/config/master": EOF
 ```
+The master nodes are able to boot when the bootstrap server is ready. The worker nodes boot when the master nodes are ready. 
+Wait for bootstrap server to complete. 
 ```bash
 cd ~/okd4/installer/
 openshift-install wait-for bootstrap-complete
