@@ -94,32 +94,22 @@ GET error: Get "https://api-int.okd.example.tld:22623/config/master": dial tcp: 
 cd ~/okd4/installer/
 openshift-install wait-for bootstrap-complete
 ```
+After the bootstrap server is completed, verify that no CSRs are pending
+```bash
+export KUBECONFIG=~/okd4/installer/auth/kubeconfig
+oc get csr
+```
+If there are pending CSRs (either for the master or worker nodes) run the following command:
+```
+oc get csr -o name | xargs oc adm certificate approve
+```
 Afterwards, wait for installation to complete
 ```bash
 openshift-install wait-for install-complete
 ```
-Verify successful installation
-```bash
-export KUBECONFIG=~/okd4/installer/auth/kubeconfig
-oc get nodes
-```
-
-## Approve Certificate Signing Requests
-Verify if CSRs are pending. Might be required to add worker nodes
-```bash
-oc get csr
-```
-Get jq
-```bash
-wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
-```
-Approve all pending CSRs
-```
-oc get csr -ojson | jq -r '.items[] | select(.status == {} ) | .metadata.name' | xargs oc adm certificate approve
-```
 
 ## References
-* https://medium.com/@craig_robinson/openshift-4-4-okd-bare-metal-install-on-vmware-home-lab-6841ce2d37eb
+* https://medium.com/@craig_robinson/guide-installing-an-okd-4-5-cluster-508a2631cbee
 * https://github.com/openshift/okd/releases
 * https://origin-release.svc.ci.openshift.org/
 * https://github.com/cragr/okd4_files
