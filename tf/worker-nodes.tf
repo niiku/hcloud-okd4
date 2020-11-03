@@ -43,12 +43,12 @@ resource "null_resource" "worker_post_deploy" {
     ]
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "reboot",
-    ]
-    on_failure = continue
-  }
+//  provisioner "remote-exec" {
+//    inline = [
+//      "reboot",
+//    ]
+//    on_failure = continue
+//  }
 }
 
 resource "cloudflare_record" "worker" {
