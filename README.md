@@ -66,6 +66,7 @@ Generate the ignition files
 ```bash
 openshift-install create ignition-configs --dir=installer/
 ```
+*Warning*: These ignition files containing certificates only valid for 24h. Recreate the files afterwards. 
 
 ## Create terraform.tfvars
 Go inside the terraform module & copy the `terraform.tfvars.example` file:
