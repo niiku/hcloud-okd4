@@ -48,13 +48,13 @@ ssh-keygen -f ~/.ssh/id_rsa -q -N ""
 ```bash
 git clone https://github.com/niiku/hcloud-okd-4.git
 ```
-### Create ignition files
+## Create ignition files
 Copy the install-config.yaml from the git repo into a separate directory
 ```bash
 mkdir -p okd4/installer
 cd okd4/
 cp ~/hcloud-okd-4/files/install-config.yaml install-config.yaml
-vi installer/install-config.yaml
+vi install-config.yaml
 ```
 Modify the install-config.yaml. Set `baseDomain` to your top level domain (e.g. example.tld). Set `metadata.name` to the wanted subdomain (e.g. okd for okd.example.tld). To get a pull secret for RedHat images (not required but useful) go to https://cloud.redhat.com/openshift/install/metal/installer-provisioned (RedHat user account required) and copy the secret into the `pullSecret` field. Don't forget to set the sshKey.
 Copy the install-config.yaml to the `installer/` directory. This is useful as the install-config.yaml file disappears while generating the installer files. 
@@ -63,10 +63,27 @@ cp install-config.yaml installer/
 ```
 Generate the ignition files
 ```bash
-openshift-install create manifests --dir=installer/
 openshift-install create ignition-configs --dir=installer/
 ```
 
+## Create terraform.tfvars
+Go inside the terraform module & copy the `terraform.tfvars.example` file:
+```bash
+cd ~/hcloud-okd-4/tf/
+cp terraform.tfvars.example terraform.tfvars
+vi terraform.tfvars
+```
+Modify the `terraform.tfvars` files accordingly.
+
+## Install OKD4
+Initialize terraform:
+```bash
+terraform init
+```
+Apply
+```bash
+terraform apply
+```
 
 ## Approve Certificate Signing Requests
 Verify if CSRs are pending. Might be required to add worker nodes

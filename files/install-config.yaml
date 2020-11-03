@@ -25,5 +25,5 @@ platform:
   none: {}
 
 fips: false
-pullSecret: '{"auths":{"fake":{"auth": "Zm9vOmJhcgo="}}}
+pullSecret: '{"auths":{"fake":{"auth": "Zm9vOmJhcgo="}}}'
 sshKey: 'ssh-rsa <your-ssh-public-key>'

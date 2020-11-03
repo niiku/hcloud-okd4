@@ -1,6 +1,7 @@
 #terraform.tfvars
 *.tfstate
 *.tfstate.backup
+*.tfvars
 .terraform/
 id_rsa
 .idea/

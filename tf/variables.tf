@@ -9,12 +9,12 @@ variable "hcloud_token" {
 #
 # Cloudflare / DNS
 #
-variable "email" {
+variable "cf_email" {
   description = "Cloudflare Account Email"
   type = string
 }
 
-variable "api_key" {
+variable "cf_api_key" {
   description = "Cloudflare API Token"
   type = string
 }

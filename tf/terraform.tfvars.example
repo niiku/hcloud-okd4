@@ -3,10 +3,11 @@
 # Select Project > Access > API Tokens > Generate API Token
 hcloud_token = "<paste-token>"
 
-# CloudFlare API Token
+# CloudFlare API Key
 # https://support.cloudflare.com/hc/en-us/articles/200167836-Where-do-I-find-my-Cloudflare-API-key-
-email = "<cloudflare-email>"
-api_key = "<paste-token>"
+# Requires the Api Key NOT Api Token!
+cf_email = "<cloudflare-email>"
+cf_api_key = "<paste-key>"
 cf_zone_id = "<paste-id>""
 
 # Public Key to access OKD4 nodes
@@ -35,7 +36,7 @@ ignition_enabled = true
 openshift_installer_dir = "~/okd4/installer/"
 
 # Fedora CoreOS installer files
-# https://getfedora.org/coreos/download/
+# https://getfedora.org/coreos/download?tab=metal_virtualized&stream=stable
 fcos_installer_initramfs  = "https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20201004.3.0/x86_64/fedora-coreos-32.20201004.3.0-live-initramfs.x86_64.img"
 fcos_installer_kernel     = "https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20201004.3.0/x86_64/fedora-coreos-32.20201004.3.0-live-kernel-x86_64"
 fcos_metal_bios           = "https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20201004.3.0/x86_64/fedora-coreos-32.20201004.3.0-metal.x86_64.raw.xz"
@@ -45,10 +46,10 @@ fcos_rootfs               = "https://builds.coreos.fedoraproject.org/prod/stream
 bootstrap_enabled = true
 bootstrap_server_type = "cx41"
 
-# Master settings
+# Master settings (smaller than cx41 doesn't work)
 master_server_type = "cx41"
 
-# Worker settings
+# Worker settings (might be cx31)
 worker_server_type = "cx41"
 worker_count = 3
 worker_storage_enabled = false # Enable worker storage to attach a hcloud disk
