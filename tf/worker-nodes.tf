@@ -35,9 +35,9 @@ resource "null_resource" "worker_post_deploy" {
 
   provisioner "remote-exec" {
     inline = [
-      "curl http://${hcloud_server.ignition.ipv4_address}/fcos-installer-kernel -o /boot/fcos-installer-kernel",
-      "curl http://${hcloud_server.ignition.ipv4_address}/fcos-initramfs.img -o /boot/fcos-initramfs.img",
-      "curl http://${hcloud_server.ignition.ipv4_address}/fcos-rootfs.img -o /boot/fcos-rootfs.img",
+      "curl http://${hcloud_server.ignition[0].ipv4_address}/fcos-installer-kernel -o /boot/fcos-installer-kernel",
+      "curl http://${hcloud_server.ignition[0].ipv4_address}/fcos-initramfs.img -o /boot/fcos-initramfs.img",
+      "curl http://${hcloud_server.ignition[0].ipv4_address}/fcos-rootfs.img -o /boot/fcos-rootfs.img",
       "grub2-set-default 2",
       "grub2-mkconfig --output=/boot/grub2/grub.cfg",
     ]

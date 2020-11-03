@@ -7,7 +7,7 @@ data "template_file" "grub-bootstrap" {
   count = var.bootstrap_enabled ? 1 : 0
   template = file("${path.module}/tpl/40_custom.tpl")
   vars = {
-    ignition_hostname = hcloud_server.ignition.ipv4_address
+    ignition_hostname = hcloud_server.ignition[0].ipv4_address
     server_role = "bootstrap"
     server_ip = hcloud_server.bootstrap[0].ipv4_address
     server_gateway = var.server_gateway
