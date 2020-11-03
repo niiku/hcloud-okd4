@@ -1,4 +1,5 @@
 # OpenShift/OKD 4 on Hetzner Cloud
+WARNING: This repo currently doesn't work
 This terraform module helps to provision [OKD 4](https://github.com/openshift/okd) on Hetzner Cloud.
 What it does is:
 * Provision a server used to serve ignition files (required to boot in Fedora CoreOS)
