@@ -85,6 +85,23 @@ Apply
 ```bash
 terraform apply
 ```
+Wait for bootstrap server to complete. This might take a while as the DNS propagation to the Hetzner DNS servers might take some time. You might see looping the error message on the VMs console:
+```
+GET error: Get "https://api-int.okd.example.tld:22623/config/master": dial tcp: lookup api-int.okd.example.tld on [::1]:53: read udp [::1]:48352->[::1]:53: read: connection refused
+```
+```bash
+cd ~/okd4/installer/
+openshift-install wait-for bootstrap-complete
+```
+Afterwards, wait for installation to complete
+```bash
+openshift-install wait-for install-complete
+```
+Verify successful installation
+```bash
+export KUBECONFIG=~/okd4/installer/auth/kubeconfig
+oc get nodes
+```
 
 ## Approve Certificate Signing Requests
 Verify if CSRs are pending. Might be required to add worker nodes
