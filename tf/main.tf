@@ -21,7 +21,7 @@ data "template_file" "grub-master" {
   count = var.master_count
   template = file("${path.module}/tpl/40_custom.tpl")
   vars = {
-    ignition_hostname = "ignition.${var.cluster_name}.${var.base_domain}"
+    ignition_hostname = hcloud_server.ignition[0].ipv4_address
     server_role = "master"
     server_ip = hcloud_server.master[count.index].ipv4_address
     server_gateway = var.server_gateway
