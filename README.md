@@ -91,7 +91,7 @@ You might see looping the error message on the VMs console on the master/worker 
 GET error: Get "https://api-int.okd.example.tld:22623/config/master": EOF
 ```
 The master nodes are able to boot when the bootstrap server is ready. The worker nodes boot when the master nodes are ready. 
-Wait for bootstrap server to complete. 
+Let's wait for bootstrap server to complete. 
 ```bash
 cd ~/okd4/installer/
 openshift-install wait-for bootstrap-complete
