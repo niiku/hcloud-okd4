@@ -183,7 +183,7 @@ spec:
   secretName: default-ingress-tls
   dnsNames:
   - apps.okd.example.tld
-  - *.apps.okd.example.tld
+  - "*.apps.okd.example.tld"
   issuerRef:
     name: cloudflare-lets-encrypt-prod
     kind: ClusterIssuer
