@@ -12,6 +12,14 @@ As I couldn't get Fedora CoreOS properly running only using Hetzners private net
 
 ## Setup Bastion node
 Provision a `CX11` or `CX11-CEPH` Hetzner Cloud Server using the operating system of your liking. I use `CX11-CEPH` as performance doesn't matter and VMs using Ceph as storage system are replicated. As operating system I use CentOS 8 as it's familiar to Fedora CoreOS. The provisioning process only takes a couple of seconds.
+If you use the [hcloud CLI](https://github.com/hetznercloud/cli) you can run the following command instead of using the web console: 
+```bash
+hcloud context create okd4 # Read/Write token is required. This can be issued using the Hetzner Cloud Console
+hcloud ssh-key create --name key --public-key-from-file=~/.ssh/id_rsa.pub
+hcloud server create --image centos-8 --type cx11-ceph --name bastion --ssh-key key
+hcloud server ssh bastion
+```
+
 
 ### Disable SSH using a password
 If not done during installation, setup SSH access via SSH keys. To disable SSH login via password, run the following command:
@@ -26,7 +34,6 @@ sudo dnf install tar unzip git -y
 ```
 Download the latest release of oc/openshift-install from https://github.com/openshift/okd/releases
 ```bash
-sudo dnf install tar -y
 curl -L https://github.com/openshift/okd/releases/download/4.5.0-0.okd-2020-10-15-235428/openshift-client-linux-4.5.0-0.okd-2020-10-15-235428.tar.gz | tar xvz
 sudo mv oc kubectl /usr/local/bin/
 
@@ -101,14 +108,36 @@ After the bootstrap server is completed, verify that no CSRs are pending
 export KUBECONFIG=~/okd4/installer/auth/kubeconfig
 oc get csr
 ```
-If there are pending CSRs (either for the master or worker nodes) run the following command:
+If there are pending CSRs run the following command:
 ```
 oc get csr -o name | xargs oc adm certificate approve
 ```
+**Worker nodes always must be approved manually**.
+
 Afterwards, wait for installation to complete
 ```bash
 openshift-install wait-for install-complete
 ```
+You can access the web console at https://console-openshift-console.apps.${cluster_name}.${base_domain} using `kubeadmin` as user. The password is provided in
+```bash
+cat ~/okd4/installer/auth/kubeadmin-password
+```
+
+## Remove ignition/bootstrap node
+After the installation is complete, the igition and bootstrap server can be removed.
+```bash
+cd ~/hcloud-okd4/tf
+vi terraform.tfvars
+[...]
+bootstrap_enabled = false
+ignition_enabled = false
+[...]
+```
+Applying the changes:
+```bash
+terraform apply
+```
+The ignition server can be provisioned again when additional nodes should be added. When additional nodes are added later than 24h after cluster creation the worker.ign file must be updated (https://access.redhat.com/solutions/4799921)
 
 ## References
 * https://medium.com/@craig_robinson/guide-installing-an-okd-4-5-cluster-508a2631cbee
