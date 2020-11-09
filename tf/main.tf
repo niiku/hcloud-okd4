@@ -18,7 +18,7 @@ data "template_file" "grub-bootstrap" {
 }
 
 data "template_file" "grub-master" {
-  count = var.master_count
+  count = var.ignition_enabled ? var.master_count : 0
   template = file("${path.module}/tpl/40_custom.tpl")
   vars = {
     ignition_hostname = hcloud_server.ignition[0].ipv4_address
@@ -32,7 +32,7 @@ data "template_file" "grub-master" {
 }
 
 data "template_file" "grub-worker" {
-  count = var.worker_count
+  count = var.ignition_enabled ? var.worker_count : 0
   template = file("${path.module}/tpl/40_custom.tpl")
   vars = {
     ignition_hostname = "ignition.${var.cluster_name}.${var.base_domain}"
