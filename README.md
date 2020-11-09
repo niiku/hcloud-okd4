@@ -139,6 +139,97 @@ terraform apply
 ```
 The ignition server can be provisioned again when additional nodes should be added. When additional nodes are added later than 24h after cluster creation the worker.ign file must be updated (https://access.redhat.com/solutions/4799921)
 
+# Setup Let's encrypt certificates for master api & ingress controller
+After the installation, the master-api and ingress controller are using self-signed certificates. To provide Let's encrypt certificates install [cert-manager for OpenShift 4](https://cert-manager.io/docs/installation/openshift/). After the successful installation of cert-manager configure a [`ClusterIssuer`](https://cert-manager.io/docs/concepts/issuer/) for [Cloudflare](https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/). 
+## Setup Cloudflare as `ClusterIssuer`
+Create a secret containing the Cloudflare API key (API token also possible, see the referenced documentation):
+```bash
+oc create secret generic cloudflare-api-key -n cert-manager --from-literal=api-key=<API-KEY>
+```
+Create the `ClusterIssuer`. Modify the `.spec.acme.email` and `.spec.acme.solvers[0].dns.cloudflare.email`.
+```bash
+oc apply -f - <<EOF
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: cloudflare-lets-encrypt-prod
+spec:
+  acme:
+    email: <le-email>
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: cloudflare-issuer-account-key
+    solvers:
+    - dns01:
+        cloudflare:
+          email: <cloudflare-email>
+          apiKeySecretRef:
+            name: cloudflare-api-key
+            key: api-key
+EOF
+```
+
+## Configure default certificate for ingress-controller
+The ingress-controller (router) can be configured to use a default certificate. This certificate will also be used to server the OpenShift web console. 
+Modify the `.spec.dnsNames` to match your default *.apps domain and additional domains. 
+```bash
+oc apply -f - <<EOF
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: default-ingress-tls
+  namespace: openshift-ingress
+spec:
+  secretName: default-ingress-tls
+  dnsNames:
+  - apps.okd.example.tld
+  - *.apps.okd.example.tld
+  issuerRef:
+    name: cloudflare-lets-encrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+EOF
+```
+Verify the requested certificate is saved as secret (may take a minute):
+```bash
+oc get secret default-ingress-tls -n openshift-ingress
+```
+If the certificate isn't issued, verify the cert-manager pod logs. When the certificate is issued successfully, configure the ingress controller to use the new certificate.
+```bash
+oc patch ingresscontroller.operator default --type=merge -p '{"spec":{"defaultCertificate": {"name": "default-ingress-tls"}}}' -n openshift-ingress-operator
+```
+It might take a while until the Let's encrypt certificate is served as default certificate as the router pods will be redeployed. 
+
+## Configure certificate for master api 
+Modify the `.spec.dnsNames` to match your public master API url . 
+```bash
+oc apply -f - <<EOF
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: master-apiserver-tls
+  namespace: openshift-config
+spec:
+  secretName: master-apiserver-tls
+  dnsNames:
+  - api.okd.example.tld
+  issuerRef:
+    name: cloudflare-lets-encrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+EOF
+```
+Verify the requested certificate is saved as secret (may take a minute):
+```bash
+oc get secret master-apiserver-tls -n openshift-config
+```
+If the certificate isn't issued, verify the cert-manager pod logs. When the certificate is issued successfully, configure the master api to use the new certificate. Modify the `.spec.servingCerts.namedCertificates[0].names` field.
+```bash
+oc patch apiserver cluster --type=merge -p '{"spec":{"servingCerts": {"namedCertificates":[{"names": ["api.okd.example.tld"],"servingCertificate": {"name": "master-apiserver-tls"}}]}}}'
+```
+It might take a while until the Let's encrypt certificate is served.
+
+
 ## References
 * https://medium.com/@craig_robinson/guide-installing-an-okd-4-5-cluster-508a2631cbee
 * https://github.com/openshift/okd/releases
