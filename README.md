@@ -2,8 +2,8 @@
 This terraform module helps to provision [OKD 4](https://github.com/openshift/okd) on Hetzner Cloud.
 What it does is:
 * Provision a server used to serve ignition files (required for booting Fedora CoreOS)
-* Setup a Hetzner LoadBalancer targeting all servers on the ports 80, 443, 6443, 22623 and additionally points 8443 to 6443 (useful if behind corporate network)
 * Setup bootstrap node, master nodes & worker nodes
+* Setup a Hetzner LoadBalancer targeting all servers on the ports 80, 443, 6443, 22623 and additionally points 8443 to 6443 (useful if behind corporate network)
 * Downloads required Fedora CoreOS binaries in the /boot partition and creates a grub2 config which boots into Fedora CoreOS with the correct arguments
 * Setup all required DNS entries using [CloudFlare](https://www.cloudflare.com/)
 
@@ -19,7 +19,6 @@ hcloud ssh-key create --name key --public-key-from-file=~/.ssh/id_rsa.pub
 hcloud server create --image centos-8 --type cx11-ceph --name bastion --ssh-key key
 hcloud server ssh bastion
 ```
-
 
 ### Disable SSH using a password
 If not done during installation, setup SSH access via SSH keys. To disable SSH login via password, run the following command:
@@ -235,3 +234,4 @@ It might take a while until the Let's encrypt certificate is served.
 * https://github.com/openshift/okd/releases
 * https://origin-release.svc.ci.openshift.org/
 * https://github.com/cragr/okd4_files
+* https://github.com/openshift/okd/blob/master/FAQ.md#how-can-i-enable-the-non-community-red-hat-operators

@@ -35,7 +35,7 @@ data "template_file" "grub-worker" {
   count = var.ignition_enabled ? var.worker_count : 0
   template = file("${path.module}/tpl/40_custom.tpl")
   vars = {
-    ignition_hostname = "ignition.${var.cluster_name}.${var.base_domain}"
+    ignition_hostname = hcloud_server.ignition[0].ipv4_address
     server_role = "worker"
     server_ip = hcloud_server.worker[count.index].ipv4_address
     server_gateway = var.server_gateway
